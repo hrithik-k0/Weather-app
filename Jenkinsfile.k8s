@@ -10,8 +10,9 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/hrithik/Weather-app.git'
-                credentialsId: 'github-creds'
+                 git branch: 'main',
+                    url: 'https://github.com/hrithik/Weather-app.git',
+                    credentialsId: 'github-creds'
                 sh 'ls -R'
             }
         }
