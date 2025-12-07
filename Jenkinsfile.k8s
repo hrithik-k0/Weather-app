@@ -9,6 +9,7 @@ pipeline {
         IMAGE = "hk00d/my-weatherapp"
         TAG = "${BUILD_NUMBER}"
         KUBECONFIG = credentials('kubeconfig')
+        DOCKERHUB = credentials('dockerhub-creds')
     }
 
     stages {
@@ -45,8 +46,9 @@ pipeline {
             steps {
                 sh '''
                   docker build -t $IMAGE:$TAG .
-                  echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
-                  docker push $IMAGE:$TAG
+                  withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PSW')]) {
+                  'echo $DOCKER_PSW | docker login -u $DOCKER_USER --password-stdin'
+                  "docker push ${IMAGE}:${TAG}"
                 '''
             }
         }
