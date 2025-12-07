@@ -4,7 +4,7 @@ pipeline {
     environment {
         IMAGE = "hk00d/my-weatherapp"
         TAG = "${BUILD_NUMBER}"   // auto-increment tag
-        KUBECONFIG = credentials('kubeconfig-embedded') // uploaded kubeconfig
+        KUBECONFIG = credentials('kubeconfig') // uploaded kubeconfig
     }
 
     stages {
