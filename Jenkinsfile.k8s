@@ -2,31 +2,42 @@ pipeline {
     agent any
 
     tools {
-    nodejs "NodeJS_18"   // must match the name you gave in Global Tool Config
-  }
+        nodejs "NodeJS_18"
+    }
 
     environment {
         IMAGE = "hk00d/my-weatherapp"
-        TAG = "${BUILD_NUMBER}"   // auto-increment tag
-        KUBECONFIG = credentials('kubeconfig') // uploaded kubeconfig
+        TAG = "${BUILD_NUMBER}"
+        KUBECONFIG = credentials('kubeconfig')
     }
 
     stages {
+
         stage('Checkout') {
             steps {
-                 git branch: 'main',
+                git branch: 'main',
                     url: 'https://github.com/hrithik-k0/Weather-app.git',
                     credentialsId: 'github-creds'
                 sh 'ls -R'
             }
         }
 
-        stage('Install & Build') {
+        stage('Install Dependencies') {
             steps {
-                sh '''
-                  npm install
-                  npm run build
-                '''
+                sh 'npm install'
+            }
+        }
+
+        // 🟢 FIX: Permissions BEFORE lint/build
+        stage('Fix ESLint Permissions') {
+            steps {
+                sh 'chmod -R 755 node_modules/.bin'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh 'npm run build'
             }
         }
 
