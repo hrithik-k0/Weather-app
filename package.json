@@ -4,7 +4,10 @@
   "description": "My first project",
   "main": "script.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+  "lint": "eslint .",
+  "test": "echo \"No tests specified\" && exit 0",
+  "build": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
