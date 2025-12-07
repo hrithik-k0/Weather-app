@@ -5,9 +5,9 @@
   "main": "script.js",
   "scripts": {
     "start": "node index.js",
-  "lint": "eslint .",
-  "test": "echo \"No tests specified\" && exit 0",
-  "build": "npm run lint && npm run test"
+    "lint": "eslint .",
+    "test": "echo \"No tests specified\" && exit 0",
+    "build": "npm run lint && npm run test"
   },
   "repository": {
     "type": "git",
@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/hrithik-k0/Weather-app/issues"
   },
-  "homepage": "https://github.com/hrithik-k0/Weather-app#readme"
+  "homepage": "https://github.com/hrithik-k0/Weather-app#readme",
+  "devDependencies": {
+    "eslint": "^9.39.1"
+  }
 }
