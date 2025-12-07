@@ -5,7 +5,9 @@ export default [
   {
     languageOptions: {
       globals: {
-        ...js.environments.browser.globals, // include browser globals
+        window: "readonly",
+        document: "readonly",
+        fetch: "readonly"
       }
     },
     rules: {
@@ -14,3 +16,4 @@ export default [
     }
   }
 ];
+
