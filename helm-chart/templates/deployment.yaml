@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "my-weatherapp.fullname" . }}
+  labels:
+    app: {{ include "my-weatherapp.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "my-weatherapp.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "my-weatherapp.name" . }}
+    spec:
+      containers:
+        - name: my-weatherapp
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: 80
+          resources:
+{{ toYaml .Values.resources | indent 12 }}

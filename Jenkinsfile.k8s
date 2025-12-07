@@ -1,0 +1,60 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE = "hk00d/my-weatherapp"
+        TAG = "${BUILD_NUMBER}"   // auto-increment tag
+        KUBECONFIG = credentials('kubeconfig-embedded') // uploaded kubeconfig
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/hrithik/Weather-app.git'
+                sh 'ls -R'
+            }
+        }
+
+        stage('Install & Build') {
+            steps {
+                sh '''
+                  npm install
+                  npm run build
+                '''
+            }
+        }
+
+        stage('Docker Build & Push') {
+            steps {
+                sh '''
+                  docker build -t $IMAGE:$TAG .
+                  echo $DOCKERHUB_PASSWORD | docker login -u $DOCKERHUB_USERNAME --password-stdin
+                  docker push $IMAGE:$TAG
+                '''
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                  export KUBECONFIG=$KUBECONFIG
+                  helm upgrade --install my-weatherapp ./helm-chart \
+                    --namespace my-weatherapp --create-namespace \
+                    --set image.repository=$IMAGE \
+                    --set image.tag=$TAG \
+                    --wait --timeout 5m
+                '''
+            }
+        }
+
+        stage('Post-Deploy Validation') {
+            steps {
+                sh '''
+                  export KUBECONFIG=$KUBECONFIG
+                  kubectl get pods -n my-weatherapp
+                  kubectl get svc -n my-weatherapp
+                '''
+            }
+        }
+    }
+}
