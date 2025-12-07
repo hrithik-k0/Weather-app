@@ -43,15 +43,19 @@ pipeline {
         }
 
         stage('Docker Build & Push') {
-            steps {
-                sh '''
-                  docker build -t $IMAGE:$TAG .
-                  withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PSW')]) {
-                  'echo $DOCKER_PSW | docker login -u $DOCKER_USER --password-stdin'
-                  "docker push ${IMAGE}:${TAG}"
-                '''
-            }
+    steps {
+        withCredentials([usernamePassword(credentialsId: 'dockerhub-creds',
+                                          usernameVariable: 'DOCKER_USER',
+                                          passwordVariable: 'DOCKER_PSW')]) {
+            sh '''
+              docker build -t $IMAGE:$TAG .
+              echo "$DOCKER_PSW" | docker login -u "$DOCKER_USER" --password-stdin
+              docker push $IMAGE:$TAG
+            '''
         }
+    }
+}
+
 
         stage('Deploy to Kubernetes') {
             steps {
