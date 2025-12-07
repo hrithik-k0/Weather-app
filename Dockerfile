@@ -5,7 +5,7 @@ FROM nginx:alpine
 WORKDIR /usr/share/nginx/html
 
 # Copy app files into Nginx web root
-COPY home.html .
+COPY index.html .
 COPY style.css .
 COPY script.js .
 COPY images ./images
